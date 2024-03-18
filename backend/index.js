@@ -19,7 +19,7 @@ const client = new Client();
 
 client.on("qr", (qr) => {
   qrCodeData = qr;
-  console.log("Scan the QR code to log in:", qr);
+  console.log("Scan the QR code to log in:", qrCodeData);
   success = false;
 });
 
@@ -306,7 +306,7 @@ app.post(
 );
 
 app.get("/qr", function (req, res) {
-  res.send("<h1>qrCodeData</h1>");
+  res.send(`<h1>${qrCodeData}</h1>`);
 });
 
 app.get("/sucess", function (req, res) {
