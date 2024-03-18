@@ -17,10 +17,18 @@ let success = false;
 // const client = new Client({ authStrategy: new LocalAuth() });
 const client = new Client();
 
-client.on("qr", (qr) => {
-  qrCodeData = qr;
-  console.log("Scan the QR code to log in:", qrCodeData);
-  success = false;
+// client.on("qr", (qr) => {
+//   qrCodeData = qr;
+//   console.log("Scan the QR code to log in:", qrCodeData);
+//   success = false;
+// });
+
+let qrCodeDataPromise = new Promise((resolve, reject) => {
+  client.on("qr", (qr) => {
+    qrCodeData = qr;
+    console.log("Scan the QR code to log in:", qrCodeData);
+    resolve(qrCodeData); // Resolve the promise when qrCodeData is set
+  });
 });
 
 client.on("ready", () => {
@@ -305,8 +313,15 @@ app.post(
   })
 );
 
-app.get("/qr", function (req, res) {
-  res.send(`<h1>${qrCodeData}</h1>`);
+app.get("/qr", async function (req, res) {
+  try {
+    // Wait until qrCodeData is available
+    await qrCodeDataPromise;
+    res.send(`<h1>${qrCodeData}</h1>`);
+  } catch (error) {
+    console.error("Error getting QR code:", error);
+    res.status(500).send("Error getting QR code");
+  }
 });
 
 app.get("/sucess", function (req, res) {
