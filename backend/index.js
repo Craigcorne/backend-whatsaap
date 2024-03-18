@@ -306,7 +306,7 @@ app.post(
 );
 
 app.get("/qr", function (req, res) {
-  res.send(qrCodeData);
+  res.send("<h1>qrCodeData</h1>");
 });
 
 app.get("/sucess", function (req, res) {
